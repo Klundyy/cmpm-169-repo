@@ -47,6 +47,7 @@ function setup() {
     resizeScreen();
   });
   resizeScreen();
+  colorMode(HSB, 360, 100, 100);
 }
 
 // draw() function is called repeatedly, it's the main animation loop
@@ -63,7 +64,7 @@ function draw() {
   noFill();
   beginShape();
   for (let x = 0; x <= width; x++) {
-    stroke(100,100,100);
+    stroke(mouseY / 2,100,100); // Color change
 
     // Calculate the combined oscillation
     let angle = map(x, 0, width, 0, TWO_PI);
