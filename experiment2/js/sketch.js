@@ -1,9 +1,7 @@
 // sketch.js - purpose and description here
-// Author: Your Name
-// Date:
+// Author: William Klunder
+// Date: 1/20/2025
 
-// Here is how you might set up an OOP p5.js project
-// Note that p5.js looks for a file called sketch.js
 
 // Constants - User-servicable parts
 // In a longer project I like to put these in a separate file
@@ -53,27 +51,41 @@ function setup() {
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(220);    
-  // call a method on the instance
-  myInstance.myMethod();
+  background(220);
 
-  // Set up rotation for the rectangle
-  push(); // Save the current drawing context
-  translate(centerHorz, centerVert); // Move the origin to the rectangle's center
-  rotate(frameCount / 100.0); // Rotate by frameCount to animate the rotation
-  fill(234, 31, 81);
+  // Variables for wave control
+  let frequency = map(mouseX, 0, width, 1, 10); // Frequency controlled by mouseX
+  let modFrequency = map(mouseY, 0, height, 0.5, 5); // Modulating frequency controlled by mouseY
+  let phi = frameCount % 360; // Phase shift over time
+
+  // Draw the wave with combined sine and cosine oscillation
+  strokeWeight(2);
+  noFill();
+  beginShape();
+  for (let x = 0; x <= width; x++) {
+    stroke(100,100,100);
+
+    // Calculate the combined oscillation
+    let angle = map(x, 0, width, 0, TWO_PI);
+    let sinWave = sin(angle * frequency + radians(phi));
+    let cosWave = cos(angle * modFrequency);
+    let y = sinWave * cosWave;
+    y *= height / 4; // Scale the amplitude
+
+    // Draw the vertex
+    vertex(x, height / 2 + y);
+  }
+  endShape();
+
+  // Display instructions
+  fill(0);
   noStroke();
-  rect(-125, -125, 250, 250); // Draw the rectangle centered on the new origin
-  pop(); // Restore the original drawing context
-
-  // The text is not affected by the translate and rotate
-  fill(255);
-  textStyle(BOLD);
-  textSize(140);
-  text("p5*", centerHorz - 105, centerVert + 40);
+  textSize(16);
+  text('Move your mouse to control the oscillation.', 10, 30);
+  text('Horizontal: Frequency | Vertical: Amplitude', 10, 50);
 }
 
 // mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {
-    // code to run when mouse is pressed
+  
 }
