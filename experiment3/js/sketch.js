@@ -124,7 +124,7 @@ function drawGrid() {
 }
 
 function drawLineGrid() {
-  let time = millis() * 0.001; // Use time to animate the lines
+  let time = millis() * 0.001;
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
