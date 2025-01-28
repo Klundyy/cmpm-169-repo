@@ -67,8 +67,6 @@ function setup() {
 }
 
 function updateNoiseExpansion() {
-  if (!isExpansionActive) return;
-
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       let distance = dist(x * cellSize, y * cellSize, expansionCenterX, expansionCenterY);
@@ -83,8 +81,10 @@ function updateNoiseExpansion() {
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  updateNoiseExpansion()
-  drawGrid();
+  if(isExpansionActive){
+    updateNoiseExpansion();
+    drawGrid();
+  }
 }
 
 // Create an array grid
@@ -124,15 +124,27 @@ function drawGrid() {
 }
 
 function drawLineGrid() {
+  let time = millis() * 0.001; // Use time to animate the lines
+
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       let cell = grid[y][x];
       let x1 = x * cellSize + cellSize / 2;
       let y1 = y * cellSize + cellSize / 2;
-      let x2 = x1 + cos(cell.height) * cellSize / 2;
-      let y2 = y1 + sin(cell.height) * cellSize / 2;
 
-      stroke(0);
+      let noiseOffsetX = noise(x * 0.1, time) * cellSize;
+      let noiseOffsetY = noise(y * 0.1, time + 1000) * cellSize;
+
+      let x2 = x1 + cos(cell.height + noiseOffsetX) * cellSize;
+      let y2 = y1 + sin(cell.height + noiseOffsetY) * cellSize;
+      let distToMouse = dist(mouseX, mouseY, x1, y1);
+      let colorFactor = map(distToMouse, 0, width, 255, 50);
+
+      stroke(lerpColor(color(0, 255, 255), color(255, 0, 255), (sin(time * 0.5) + 1) / 2), colorFactor);
+
+      let lineThickness = map(noise(x * 0.1, y * 0.1), 0, 1, 0.5, 3);
+      strokeWeight(lineThickness);
+
       line(x1, y1, x2, y2);
     }
   }
@@ -146,6 +158,7 @@ function mousePressed() {
 
 function keyPressed() {
   if (key === '1') {
+    isExpansionActive = false;
     grid = [];
     initGrid();
     drawGrid();
@@ -153,6 +166,7 @@ function keyPressed() {
   }
 
   if (key === '2') {
+    isExpansionActive = false;
     grid = [];
     initNoiseGrid();
     drawGrid();
@@ -160,6 +174,7 @@ function keyPressed() {
   }
 
   if(key === '3'){
+    isExpansionActive = false;
     grid = [];
     initGrid();
     drawLineGrid();
