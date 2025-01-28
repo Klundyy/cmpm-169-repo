@@ -18,6 +18,8 @@ var centerHorz, centerVert;
 let cols, rows;
 let cellSize = 20;
 let grid = [];
+let isExpansionActive = false;
+let noiseScale = 0.1;
 
 class MyClass {
     constructor(param1, param2) {
@@ -59,8 +61,21 @@ function setup() {
   drawGrid();
 }
 
+function updateNoiseExpansion() {
+  if (!isExpansionActive) return;
+
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      let height = noise(x * noiseScale, y * noiseScale, millis() * 0.001);
+      grid[y][x].height = height;
+    }
+  }
+}
+
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
+  updateNoiseExpansion()
+  drawGrid();
 }
 
 // Create an array grid
@@ -77,7 +92,6 @@ function initGrid() {
 }
 
 function initNoiseGrid() {
-  let noiseScale = 0.05;
   for (let y = 0; y < rows; y++) {
     let row = [];
     for (let x = 0; x < cols; x++) {
@@ -93,7 +107,8 @@ function drawGrid() {
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
       let cell = grid[y][x];
-      fill(cell.height*255);
+      let cellColor = color(map(cell.height, 0, 1, 50, 255),0,255);
+      fill(cellColor);
       rect(x * cellSize, y * cellSize, cellSize, cellSize);
     }
   }
@@ -139,6 +154,9 @@ function keyPressed() {
     drawLineGrid();
   }
 
+  if (key === '4') {
+    isExpansionActive = !isExpansionActive; // Toggle the explosion effect
+  }
 
   if (keyCode === ENTER) {
   }
