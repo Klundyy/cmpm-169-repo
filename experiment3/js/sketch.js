@@ -1,6 +1,6 @@
 // sketch.js - purpose and description here
-// Author: Your Name
-// Date:
+// Author: William Klunder
+// Date:1/27/2025
 
 // Here is how you might set up an OOP p5.js project
 // Note that p5.js looks for a file called sketch.js
@@ -14,6 +14,10 @@ const VALUE2 = 2;
 let myInstance;
 let canvasContainer;
 var centerHorz, centerVert;
+
+let cols, rows;
+let cellSize = 20;
+let grid = [];
 
 class MyClass {
     constructor(param1, param2) {
@@ -49,31 +53,93 @@ function setup() {
     resizeScreen();
   });
   resizeScreen();
+  cols = floor(width / cellSize);
+  rows = floor(height / cellSize);
+  initGrid();
+  drawGrid();
 }
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(220);    
-  // call a method on the instance
-  myInstance.myMethod();
+}
 
-  // Set up rotation for the rectangle
-  push(); // Save the current drawing context
-  translate(centerHorz, centerVert); // Move the origin to the rectangle's center
-  rotate(frameCount / 100.0); // Rotate by frameCount to animate the rotation
-  fill(234, 31, 81);
-  noStroke();
-  rect(-125, -125, 250, 250); // Draw the rectangle centered on the new origin
-  pop(); // Restore the original drawing context
+// Create an array grid
+function initGrid() {
+  for (let y = 0; y < rows; y++) {
+    let row = [];
+    for (let x = 0; x < cols; x++) {
+      row.push({
+        height: random(1)
+      });
+    }
+    grid.push(row);
+  }
+}
 
-  // The text is not affected by the translate and rotate
-  fill(255);
-  textStyle(BOLD);
-  textSize(140);
-  text("p5*", centerHorz - 105, centerVert + 40);
+function initNoiseGrid() {
+  let noiseScale = 0.05;
+  for (let y = 0; y < rows; y++) {
+    let row = [];
+    for (let x = 0; x < cols; x++) {
+      let height = noise(x * noiseScale, y * noiseScale);
+      row.push({ height: height});
+    }
+    grid.push(row);
+  }
+}
+
+// Visualize the array
+function drawGrid() {
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      let cell = grid[y][x];
+      fill(cell.height*255);
+      rect(x * cellSize, y * cellSize, cellSize, cellSize);
+    }
+  }
+}
+
+function drawLineGrid() {
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      let cell = grid[y][x];
+      let x1 = x * cellSize + cellSize / 2;
+      let y1 = y * cellSize + cellSize / 2;
+      let x2 = x1 + cos(cell.height) * cellSize / 2;
+      let y2 = y1 + sin(cell.height) * cellSize / 2;
+
+      stroke(0);
+      line(x1, y1, x2, y2);
+    }
+  }
 }
 
 // mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {
-    // code to run when mouse is pressed
+}
+
+function keyPressed() {
+  if (key === '1') {
+    grid = [];
+    initGrid();
+    drawGrid();
+    console.log("normal grid");
+  }
+
+  if (key === '2') {
+    grid = [];
+    initNoiseGrid();
+    drawGrid();
+    console.log("noise grid");
+  }
+
+  if(key === '3'){
+    grid = [];
+    initGrid();
+    drawLineGrid();
+  }
+
+
+  if (keyCode === ENTER) {
+  }
 }

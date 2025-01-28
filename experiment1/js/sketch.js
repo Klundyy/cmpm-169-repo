@@ -51,22 +51,29 @@ function setup() {
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(200);
+  background(220);
 
-  // Frequency and amplitude based on mouse position
-  let frequency = map(mouseX, 0, width, 5, 50); // Line density
-  let amplitude = map(mouseY, 0, height, 10, 200); // Line height
+  // Variables for wave control
+  let frequency = map(mouseX, 0, width, 1, 10); // Frequency controlled by mouseX
+  let modFrequency = map(mouseY, 0, height, 0.5, 5); // Modulating frequency controlled by mouseY
+  let phi = frameCount % 360; // Phase shift over time
 
-  // Draw the oscillating lines
-  stroke(0);
+  // Draw the wave with combined sine and cosine oscillation
   strokeWeight(2);
   noFill();
-
   beginShape();
-  for (let x = 0; x < width; x += 1) {
-    let angle = (x * frequency) / width * TWO_PI;
-    let y = height / 2 + sin(angle) * amplitude;
-    vertex(x, y);
+  for (let x = 0; x <= width; x++) {
+    stroke(100,100,100);
+
+    // Calculate the combined oscillation
+    let angle = map(x, 0, width, 0, TWO_PI);
+    let sinWave = sin(angle * frequency + radians(phi));
+    let cosWave = cos(angle * modFrequency);
+    let y = sinWave * cosWave;
+    y *= height / 4; // Scale the amplitude
+
+    // Draw the vertex
+    vertex(x, height / 2 + y);
   }
   endShape();
 
