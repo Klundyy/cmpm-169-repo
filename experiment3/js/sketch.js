@@ -21,6 +21,11 @@ let grid = [];
 let isExpansionActive = false;
 let noiseScale = 0.1;
 
+let expansionCenterX = 500;
+let expansionCenterY = 500;
+let expansionRadius = 150; 
+let expansionIntensity = 0.1;
+
 class MyClass {
     constructor(param1, param2) {
         this.property1 = param1;
@@ -66,9 +71,13 @@ function updateNoiseExpansion() {
 
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
+      let distance = dist(x * cellSize, y * cellSize, expansionCenterX, expansionCenterY);
       let height = noise(x * noiseScale, y * noiseScale, millis() * 0.001);
-      grid[y][x].height = height;
+
+      let expansionEffect = map(distance, 0, expansionRadius, expansionIntensity, 0);
+      grid[y][x].height = height + expansionEffect;
     }
+
   }
 }
 
@@ -131,6 +140,8 @@ function drawLineGrid() {
 
 // mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {
+  expansionCenterX = mouseX;
+  expansionCenterY = mouseY;
 }
 
 function keyPressed() {
@@ -155,7 +166,15 @@ function keyPressed() {
   }
 
   if (key === '4') {
-    isExpansionActive = !isExpansionActive; // Toggle the explosion effect
+    isExpansionActive = !isExpansionActive;
+  }
+
+  if (key === '=') {
+    expansionRadius += 10;
+  }
+
+  if (key === '-') {
+    expansionRadius -= 10;
   }
 
   if (keyCode === ENTER) {
