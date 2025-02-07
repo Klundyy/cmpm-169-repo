@@ -15,8 +15,7 @@ let myInstance;
 let canvasContainer;
 var centerHorz, centerVert;
 
-let cam;
-let cols = 10, rows = 10;
+let cols = 20, rows = 20;
 let w, h;
 
 
