@@ -15,6 +15,10 @@ let myInstance;
 let canvasContainer;
 var centerHorz, centerVert;
 
+let cam;
+let cols = 10, rows = 10;
+let w, h;
+
 
 class MyClass {
     constructor(param1, param2) {
@@ -52,14 +56,27 @@ function setup() {
   resizeScreen();
 
   capture = createCapture(VIDEO);
+  capture.size(cols, rows);
   capture.hide();
+  w = width / cols;
+  h = height / rows;
 }
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
+  capture.loadPixels();
 
-  image(capture, 0, 0, width, width * capture.height / capture.width);
-  
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      let i = (y * cols + x) * 4;
+      let sx = x * w;
+      let sy = y * h;
+      
+      let col = capture.get(x, y);
+      fill(col);
+      rect(sx, sy, w, h);
+    }
+  }
 }
 
 
