@@ -15,7 +15,8 @@ let cols, rows;
 let spacing = 10;
 let w = 400;
 let h = 400;
-let origin;
+let currentOrigin, newOrigin;
+let intervalAmount = 50;
 
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2;
@@ -41,7 +42,8 @@ function setup() {
   // Random spawn point for wave
   let randomX = floor(random(cols));
   let randomY = floor(random(rows));
-  origin = createVector(randomX, randomY);
+  currentOrigin = createVector(random(cols), random(rows));
+  newOrigin = createVector(random(cols), random(rows));
 }
 
 // draw() function is called repeatedly, it's the main animation loop
@@ -54,15 +56,19 @@ function draw() {
   stroke(color(0, 100, 180));
   noFill();
 
-
+  currentOrigin.lerp(newOrigin, 0.005);
+  // Make a new target location
+  if (frameCount % intervalAmount === 0) {
+    newOrigin = createVector(random(cols), random(rows));
+  }
   // Draw grid as lines
   for (let y = 0; y < rows - 1; y++) {
     beginShape();
     for (let x = 0; x < cols; x++) {
       let xPos = x * spacing;
       let yPos = y * spacing;
-      let distFromOrigin = dist(x, y, origin.x, origin.y);
-      let zPos = sin(frameCount - distFromOrigin * 5) * 50;
+      let distFromOrigin = dist(x, y, currentOrigin.x, currentOrigin.y);
+      let zPos = sin(frameCount - distFromOrigin * 10) * 60;
 
       vertex(xPos, yPos, zPos);
     }
