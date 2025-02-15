@@ -17,6 +17,7 @@ let w = 400;
 let h = 400;
 let currentOrigin, newOrigin;
 let intervalAmount = 50;
+let mode = 1;
 
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2;
@@ -68,7 +69,11 @@ function draw() {
       let xPos = x * spacing;
       let yPos = y * spacing;
       let distFromOrigin = dist(x, y, currentOrigin.x, currentOrigin.y);
-      let zPos = sin(frameCount - distFromOrigin * 10) * 60;
+      if(mode == 1){
+        zPos = sin(frameCount - distFromOrigin * 10) * 60;
+      } else if(mode == 2){
+        zPos = sin(frameCount - distFromOrigin * random(0,5)) * 60;
+      }
 
       vertex(xPos, yPos, zPos);
     }
@@ -85,5 +90,10 @@ function mousePressed() {
 }
 
 function keyPressed() {
- 
+  if (key === '1') {
+    mode = 1;
+  }
+  if (key === '2') {
+    mode = 2;
+  }
 }
