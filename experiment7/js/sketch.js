@@ -155,6 +155,7 @@ function createInputBox() {
   inputBox.show();
   submitButton.show();
 }
+
 function handleLocationInput() {
   let userInput = inputBox.value().trim();
 
